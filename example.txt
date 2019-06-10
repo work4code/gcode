@@ -26,6 +26,8 @@ echo -e "  For help, visit  \E[1;31mhttp://support.ansible.com/\E[0m"
 
 -- Vagrant build with shell example --
 
+Example -1 
+
 Vagrant.configure("2") do |config|
 #  config.vm.box = "puppetlabs/centos-7.2-64-puppet"
   config.vm.provider "virtualbox" do |v|
@@ -39,18 +41,117 @@ Vagrant.configure("2") do |config|
     yum install vim-enhanced -y
     yum install tree -y
     yum install screen -y
+    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 SHELL
 end
 
+Example -2 
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 1
+  end
+    config.vm.box = "centos/7"
+    config.vm.network "private_network", ip: "192.168.56.20"
+    config.vm.hostname = "kub"
+    config.vm.provision "shell", inline: <<-SHELL
+        yum install vim-enhanced -y
+        yum install tree -y
+        yum install screen -y
+        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+SHELL
+end
+
+   config.vm.box = "centos/7"
+      config.vm.network "private_network", ip: "192.168.56.21"
+      config.vm.hostname = "node1"
+      config.vm.provision "shell", inline: <<-SHELL
+          yum install vim-enhanced -y
+          yum install tree -y
+          yum install screen -y
+          sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+SHELL
+end
+
+     config.vm.box = "centos/7"
+     config.vm.network "private_network", ip: "192.168.56.22"
+     config.vm.hostname = "node2"
+     config.vm.provision "shell", inline: <<-SHELL
+     yum install vim-enhanced -y
+     yum install tree -y
+     yum install screen -y
+     sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+SHELL
+end
+
+end
+
+Example  - 3 
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 1
+  end
+  config.vm.define "kube" do |kub|
+    kub.vm.box = "centos/7"
+    kub.vm.network "private_network", ip: "192.168.56.20"
+    kub.vm.hostname = "kub"
+   end
+
+  config.vm.define "node1" do |nd1|
+    nd1.vm.box = "centos/7"
+    nd1.vm.network "private_network", ip: "192.168.56.22"
+    nd1.vm.hostname = "node1"
+   end
+
+  config.vm.define "node2" do |nd2|
+    nd2.vm.box = "centos/7"
+    nd2.vm.network "private_network", ip: "192.168.56.23"
+    nd2.vm.hostname = "node2"
+   end
+end
+
+
+
 --sshd_config file --
 
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.`date +%F`
+cat > /etc/ssh/sshd_config<<'EOF'
 AcceptEnv LANG LC_*
 ChallengeResponseAuthentication no
 GSSAPIAuthentication no
 PermitRootLogin yes
+PasswordAuthentication yes
 PrintMotd yes
 Subsystem sftp /usr/libexec/openssh/sftp-server
 UseDNS no
 UsePAM yes
 X11Forwarding yes
+EOF
+
+--Banner Configuration Example --
+
+echo "#!/bin/bash" >> /etc/profile.d/banner.sh
+echo 'echo ""'  >> /etc/profile.d/banner.sh
+echo -e '"  \E[1;31mWelcome to Puppet Master!\E[0m" '  >> /etc/profile.d/banner.sh
+echo 'echo ""'  >> /etc/profile.d/banner.sh
+
+
+[root@man ~]# cat /etc/profile.d/banner.sh
+#!/bin/bash
+# Puppet managed
+
+echo ""
+echo -e "  \E[1;31mWelcome to Puppet Master!\E[0m"
+echo ""
+
+
+[root@node1 ~]# cat /etc/profile.d/banner.sh
+#!/bin/bash
+# Ansible managed
+echo ""
+echo -e "  \E[1;34mWelcome to R&D node1!\E[0m"
+echo ""
 
