@@ -133,9 +133,16 @@ EOF
 
 --Banner Configuration Example --
 
-echo "#!/bin/bash" >> /etc/profile.d/banner.sh
+->node banner
+echo '#!/bin/bash' > /etc/profile.d/banner.sh
 echo 'echo ""'  >> /etc/profile.d/banner.sh
-echo -e '"  \E[1;31mWelcome to Puppet Master!\E[0m" '  >> /etc/profile.d/banner.sh
+echo 'echo -e "\E[1;34mWelcome to R&D $(uname -n)!\E[0m" '  >> /etc/profile.d/banner.sh
+echo 'echo ""' >> /etc/profile.d/banner.sh
+
+->master banner
+echo '#!/bin/bash' > /etc/profile.d/banner.sh
+echo 'echo ""'  >> /etc/profile.d/banner.sh
+echo 'echo -e "\E[1;31mWelcome to Kube Master R&D $(uname -n)!\E[0m" '  >> /etc/profile.d/banner.sh
 echo 'echo ""'  >> /etc/profile.d/banner.sh
 
 
