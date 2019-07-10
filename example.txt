@@ -162,3 +162,8 @@ echo ""
 echo -e "  \E[1;34mWelcome to R&D node1!\E[0m"
 echo ""
 
+
+git hub  - 
+https://github.com/apnex/nsx
+https://github.com/apnex/hacking
+
