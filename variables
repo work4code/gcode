@@ -1,0 +1,3 @@
+
+for updating the docker permission
+sudo usermod -aG docker ${USER}
