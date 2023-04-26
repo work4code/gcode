@@ -1,1 +1,1 @@
-# This dir structure is for shell script development. 
+# This dir is for shell script development. 
